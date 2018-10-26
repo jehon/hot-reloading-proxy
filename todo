@@ -1,0 +1,27 @@
+https://github.com/yargs/yargs/issues/new
+
+Configure an optional config file as basis
+
+Hello
+
+I would be happy to have a 
+
+> yarns
+> 	.config({
+> 		optionalExtends: 'config.json'
+> 	})
+> 
+
+that would load the config.json if it exists, and would not fail if the file does not exists.
+
+Does that exists already?
+
+> 	.config({
+> 		extends: 'config.json'
+> 	})
+
+fail if the file config.json does not exists...
+
+If it does not exists, I would be happy to contribute with a PR
+
+Thanks for this great program !

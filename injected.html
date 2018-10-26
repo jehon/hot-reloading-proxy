@@ -1,0 +1,52 @@
+<!-- Code injected by hot-reloading-server begin -->
+<script type="text/javascript">
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function() {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					head.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					head.appendChild(elem);
+				}
+			}
+
+			function connect() {
+				console.log("Hot-reloading-proxy: Connecting");
+				var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+				var address = protocol + window.location.host + '/hot-reloading-proxy/ws';
+				var socket = new WebSocket(address);
+				socket.addEventListener('message', function(msg) {
+					switch(msg.data) {
+						case 'reload':
+							window.location.reload();
+							break;
+						case 'refreshcss':
+							refreshCSS();
+							break;
+						case 'connected':
+							console.log("Hot-reloading-proxy: connected");
+							break;
+						default:
+							console.log("WS Hot-reloading-proxy: message not understood: ", msg.data);
+					}
+				});
+				socket.addEventListener('close', function() {
+					console.log("Hot-reloading-proxy: Connection lost, trying to reconnect");
+					setTimeout(connect, 1000);
+				});
+				console.log('Hot-reloading-proxy: enabled to ', address);
+			}
+			connect();
+		})();
+	}
+	// ]]>
+</script>
+<!-- Code injected by hot-reloading-server end -->
