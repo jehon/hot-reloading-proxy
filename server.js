@@ -31,6 +31,16 @@ function injectIntoString(data) {
 
 var HotReloadingProxy = {};
 
+HotReloadingProxy.defaultOptions = {
+	port: 3001,
+	remote: "http://localhost:3000",
+	watch: [ "." ],
+	ignore: [],
+	delayms: 0,
+	logLevel: 1,
+	wsPath: '/hot-reloading-proxy/ws'
+}
+
 /**
  * Start with parameters given as an object
  * @param proxy {url} The server that will be proxied
@@ -39,7 +49,9 @@ var HotReloadingProxy = {};
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  */
-HotReloadingProxy.start = function(options = {}) {
+HotReloadingProxy.start = function(options) {
+	options = Object.assign({}, HotReloadingProxy.defaultOptions, options);
+
 	// Make it global
 	logLevel = options.logLevel;
 	if (logLevel > 2) {
