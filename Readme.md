@@ -16,7 +16,7 @@ That's all!
 
 ## Install
 
-With local install
+With local install from npmjs:
 
 ```lang=js
     npm install -D hot-reloading-proxy
@@ -25,7 +25,7 @@ With local install
 With global install
 
 ```lang=js
-    npm install -D hot-reloading-proxy
+    npm install -g hot-reloading-proxy
 ```
 
 
@@ -64,3 +64,26 @@ Other options:
 |--ignore  | (once or multiple times)<br>set some folders to be ignored in the watch list | 'node_modules'
 |--verbose | increase verbosity | - |
 |--quiet   | reduce verbosity | - |
+
+## Use it as a module
+
+```lang=javascript
+#!/usr/bin/env node
+/* eslint-env node */
+
+const hotReloadingProxy = require('hot-reloading-proxy/server');
+
+hotReloadingProxy.start({
+	port: 3000,
+	remote: 'http://localhost:3001'
+});
+
+/* and now, do your own stuff, like starting your own server on 3001 */
+/* example: call you original server.js: require('./server.js') */
+```
+
+## Changelog
+
+v1.0.2:
+    - Enable using hot-reloading-proxy as a module
+    - Dev: factorize the default configuration
