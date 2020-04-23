@@ -14,14 +14,14 @@ let logLevel = 1;
 
 const INJECTED_CODE = fs.readFileSync(path.join(__dirname, "injected.html"), "utf8");
 const INJECT_CANDIDATES = [
-	new RegExp("</body>", "i"), 
-	new RegExp("</svg>"), 
+	new RegExp("</body>", "i"),
+	new RegExp("</svg>"),
 	new RegExp("</head>", "i"),
 	new RegExp("</html>", "i")
 ];
 
 function injectIntoString(data) {
-	for(const injectTag of INJECT_CANDIDATES) {
+	for (const injectTag of INJECT_CANDIDATES) {
 		if (injectTag.exec(data)) {
 			return data.replace(injectTag, INJECTED_CODE + injectTag.source.replace("\\/", "/"));
 		}
@@ -34,7 +34,7 @@ var HotReloadingProxy = {};
 HotReloadingProxy.defaultOptions = {
 	port: 3001,
 	remote: "http://localhost:3000",
-	watch: [ "." ],
+	watch: ["."],
 	ignore: [],
 	delayms: 0,
 	logLevel: 1,
@@ -49,7 +49,7 @@ HotReloadingProxy.defaultOptions = {
  * @param ignore {array} Paths to ignore when watching files for changes
  * @param logLevel {number} 0 = errors only, 1 = some, 2 = lots
  */
-HotReloadingProxy.start = function(options) {
+HotReloadingProxy.start = function (options) {
 	options = Object.assign({}, HotReloadingProxy.defaultOptions, options);
 
 	// Make it global
@@ -60,14 +60,14 @@ HotReloadingProxy.start = function(options) {
 
 	this.ws(options.wsPath);
 	this.watch(options.wsPath, options.watch, options.ignore);
-	this.serve(options.remote, options.port);
+	return this.serve(options.remote, options.port);
 }
 
-HotReloadingProxy.ws = function(wsPath) {
+HotReloadingProxy.ws = function (wsPath) {
 	if (logLevel > 2) {
 		console.log("Listening for technical connection on ", wsPath);
 	}
-	app.ws(wsPath, function(ws, req) {
+	app.ws(wsPath, function (ws, req) {
 		if (logLevel > 0) {
 			console.log("Client connected");
 		}
@@ -80,12 +80,12 @@ function notify(wsPath, data = "connected") {
 	if (logLevel > 0) {
 		console.log("Notifying ", clients.size, "clients")
 	}
-	for(const client of clients) {
+	for (const client of clients) {
 		client.send(data);
 	}
 }
 
-HotReloadingProxy.serve = function(remote, port) {
+HotReloadingProxy.serve = function (remote, port) {
 	if (logLevel === 2) {
 		app.use(logger('dev', {
 			// skip: function (req, res) { return res.statusCode < 400; }
@@ -97,7 +97,7 @@ HotReloadingProxy.serve = function(remote, port) {
 	// TODO: filter injection path according to proxyRes ?
 	app.use("/", httpProxy(remote, {
 		preserveHostHdr: true,
-		userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
+		userResDecorator: function (proxyRes, proxyResData, userReq, userRes) {
 			// Example: https://github.com/villadora/express-http-proxy/blob/master/test/userResDecorator.js
 			if (userReq.url.indexOf('/.websocket') >= 0) {
 				return proxyResData;
@@ -114,15 +114,19 @@ HotReloadingProxy.serve = function(remote, port) {
 		}
 	}));
 
-	app.listen(port, () => {
-		// Output
-		if (logLevel >= 1) {
-			console.log(("Serving \"%s\" at :%s").green, remote, port);
-		}
-	});
+	return new Promise(resolve => {
+		app.listen(port, () => {
+			realPort = listener.address().port;
+			// Output
+			if (logLevel >= 1) {
+				console.log(("Serving \"%s\" at :%s").green, remote, realPort);
+			}
+			resolve(realPort);
+		});
+	})
 };
 
-HotReloadingProxy.watch = function(wsPath, watchList = [ '.' ], optionsIgnore = []) {
+HotReloadingProxy.watch = function (wsPath, watchList = ['.'], optionsIgnore = []) {
 	var ignored = [
 		// Always ignore dotfiles (important e.g. because editor hidden temp files)
 		(testPath) => testPath !== "." && /(^[.#]|(?:__|~)$)/.test(path.basename(testPath)),
@@ -141,8 +145,8 @@ HotReloadingProxy.watch = function(wsPath, watchList = [ '.' ], optionsIgnore = 
 	function handleChange(changePath) {
 		// TODO: manage pictures too...
 		let change = (
-			path.extname(changePath) === ".css" ? "refreshcss" 
-			: 'reload'
+			path.extname(changePath) === ".css" ? "refreshcss"
+				: 'reload'
 		)
 		if (logLevel >= 1) {
 			console.log(`Change detected: order to '${change}' - `.magenta, changePath);
