@@ -1,6 +1,6 @@
 {
   "name": "hot-reloading-proxy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "simple reverse proxy server introducing live reload capability",
   "keywords": [
     "front-end",
