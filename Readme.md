@@ -82,6 +82,13 @@ hotReloadingProxy.start({
 /* example: call you original server.js: require('./server.js') */
 ```
 
+The start take options:
+
+	wsPath: 
+    watch: array of path to watch for
+    ignore:
+
+
 ## Changelog
 
 v1.0.2:
