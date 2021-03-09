@@ -1,3 +1,6 @@
+# Not maintained (2021-03-07)
+Sorry, I don't have time to maintain this anymore. If someone want to take it over, please contact me.
+
 # Hot-reloading-proxy
 
 Inspired from https://github.com/JJJYY/http-live-server
